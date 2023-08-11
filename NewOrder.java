@@ -18,7 +18,6 @@ public class NewOrder {
 	
 	public NewOrder() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	public NewOrder(String name, String size, String ice, String sugar, String topping, String quantity, String price) {
@@ -88,6 +87,20 @@ public class NewOrder {
 		this.topping = topping;
 	}
 
+	public static boolean check(Scanner sc) {
+		boolean exit = false;
+		while(!exit) {
+		System.out.println("Do you want to order more? (Y/N)");
+		String choice = sc.nextLine();
+		if(!choice.equalsIgnoreCase("N") && !choice.equalsIgnoreCase("Y")) {
+			System.out.println("Invalid Choice, Input Again!! ");
+			choice = sc.nextLine();
+		}
+		return choice.equalsIgnoreCase("Y");
+		}
+		return exit;
+	}
+	
 	public static ArrayList<NewOrder> inputOrder() {
 		ArrayList<NewOrder> list = new ArrayList<NewOrder>();
 		Scanner sc = new Scanner(System.in);
@@ -109,14 +122,9 @@ public class NewOrder {
 		String price = sc.nextLine();
 		NewOrder order = new NewOrder(name, size, ice, sugar, topping, quantity, price);
 	    list.add(order);
-		System.out.println("Do you want to order more? (Y/N)");
-	        String choice = sc.nextLine();  
-	        if (choice.equalsIgnoreCase("N")) {
-	            exit = true;
-	        } else if (!choice.equalsIgnoreCase("Y")) {
-	          System.out.println("Please choose again!");
-	          choice = sc.nextLine();
-	        } 
+	    if (!check(sc)) {
+	        exit = true;
+			}
 		}
 		return list;
 	}
@@ -138,7 +146,7 @@ public class NewOrder {
 			FileWriter fWriter = new FileWriter("C:\\Users\\Admin\\Desktop\\lib java\\Order.txt");
 			BufferedWriter bWriter = new BufferedWriter(fWriter);
 		    for (NewOrder data : list) {
-		    bWriter.write(data.name + ";" + data.size + ";" + data.ice + ";" + data.sugar + ";" + data.topping  + ";" + data.quantity + data.price);
+		    bWriter.write(data.name + ";" + data.size + ";" + data.ice + ";" + data.sugar + ";" + data.topping  + ";" + data.quantity + ";" + data.price);
 		    bWriter.newLine();    	
 		    }
 			bWriter.close();
@@ -147,60 +155,22 @@ public class NewOrder {
 			e.printStackTrace();
 		}
 	}
-	public static ArrayList<NewOrder> inputFileBill() {
-		ArrayList<NewOrder> list = new ArrayList<NewOrder>();
-		try {
-			FileReader fReader = new FileReader("C:\\\\Users\\\\Admin\\\\Desktop\\\\lib java\\\\Order.txt");
-			BufferedReader bReader = new BufferedReader(fReader);
-			while(true) {
-				String line = bReader.readLine();
-				if(line == null || line == "") break;
-				String[] temp = line.split("[;]");
-				NewOrder data = new NewOrder(temp[0], temp[1], temp[2], temp[3], temp[4], temp[5], temp[6]);
-				list.add(data);
-			}
-			bReader.close();
-			fReader.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
 
-	public static void outputFileBill(ArrayList<NewOrder> list){
-		try {
-			FileWriter fWriter = new FileWriter("C:\\Users\\Admin\\Desktop\\lib java\\bill.txt");
-			BufferedWriter bWriter = new BufferedWriter(fWriter);
-			for(NewOrder data : list) {
-				bWriter.write(data.getName() + ";" + data.getSize() + ";" + data.getIce() + ";" + data.getSugar() + ";" + data.getTopping() + ";" + data.getQuantity() + ";" + data.getPrice());
-				bWriter.newLine();
-			}
-			bWriter.close();
-			fWriter.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public void choiceQA() {
 		Scanner sc = new Scanner(System.in);
 		ArrayList<NewOrder> list = new ArrayList<NewOrder>();
 		boolean exit = false;
-		System.out.println("Enter Your Choice: 1 - Order Your Drink And Print Bill, 2 - Save Bill To Data, 3 - Complete The Purchase.");
+		System.out.println("Enter Your Choice: 1 - Order Your Drink And Print Bill, 2 - Complete The Purchase.");
 		while (!exit) {
 			int choice = sc.nextInt();
 			switch (choice) {
 			case 1:
-				ArrayList<NewOrder> list1 = inputOrder();
-				outputFileOrder(list1);
+				list = inputOrder();
+				outputFileOrder(list);
 				System.out.println("Order Has Been Completed");
-				printBill(list1);
-				break;	
+				printBill(list);
+				break;
 			case 2:
-				list = inputFileBill();
-				outputFileBill(list);
-				System.out.println("Save Bill To Data Has Been Completed");
-			case 3:
 				exit = true;
 				System.out.println("Exit!");
 				break;
